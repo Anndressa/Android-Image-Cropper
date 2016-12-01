@@ -220,6 +220,8 @@ public class CropImageView extends FrameLayout {
                     options.touchRadius = ta.getDimension(R.styleable.CropImageView_cropTouchRadius, options.touchRadius);
                     options.initialCropWindowPaddingRatio = ta.getFloat(R.styleable.CropImageView_cropInitialCropWindowPaddingRatio, options.initialCropWindowPaddingRatio);
                     options.borderLineThickness = ta.getDimension(R.styleable.CropImageView_cropBorderLineThickness, options.borderLineThickness);
+                    options.borderLineDashGap = ta.getDimension(R.styleable.CropImageView_cropBorderLineDashGap, options.borderLineDashGap);
+                    options.borderLineDashWidth = ta.getDimension(R.styleable.CropImageView_cropBorderLineDashWidth, options.borderLineDashWidth);
                     options.borderLineColor = ta.getInteger(R.styleable.CropImageView_cropBorderLineColor, options.borderLineColor);
                     options.borderCornerThickness = ta.getDimension(R.styleable.CropImageView_cropBorderCornerThickness, options.borderCornerThickness);
                     options.borderCornerOffset = ta.getDimension(R.styleable.CropImageView_cropBorderCornerOffset, options.borderCornerOffset);

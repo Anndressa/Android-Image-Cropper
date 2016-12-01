@@ -15,6 +15,7 @@ package com.theartofdev.edmodo.cropper;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -227,8 +228,8 @@ public class CropOverlayView extends View {
      * ImageView. This is necessary to call in order to draw the crop window.
      *
      * @param boundsPoints the image's bounding points
-     * @param viewWidth The bounding image view width.
-     * @param viewHeight The bounding image view height.
+     * @param viewWidth    The bounding image view width.
+     * @param viewHeight   The bounding image view height.
      */
     public void setBounds(float[] boundsPoints, int viewWidth, int viewHeight) {
         if (boundsPoints == null || !Arrays.equals(mBoundsPoints, boundsPoints)) {
@@ -363,7 +364,7 @@ public class CropOverlayView extends View {
      * Sets the Y value of the aspect ratio; is defaulted to 1.
      *
      * @param aspectRatioY int that specifies the new Y value of the aspect
-     * ratio
+     *                     ratio
      */
     public void setAspectRatioY(int aspectRatioY) {
         if (aspectRatioY <= 0) {
@@ -483,6 +484,9 @@ public class CropOverlayView extends View {
         mInitialCropWindowPaddingRatio = options.initialCropWindowPaddingRatio;
 
         mBorderPaint = getNewPaintOrNull(options.borderLineThickness, options.borderLineColor);
+        if (options.borderLineDashGap > 0 && options.borderLineDashWidth > 0) {
+            mBorderPaint.setPathEffect(new DashPathEffect(new float[]{options.borderLineDashWidth, options.borderLineDashGap}, 0));
+        }
 
         mBorderCornerOffset = options.borderCornerOffset;
         mBorderCornerLength = options.borderCornerLength;

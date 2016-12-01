@@ -124,6 +124,16 @@ public class CropImageOptions implements Parcelable {
     public float borderLineThickness;
 
     /**
+     * the dash gap of the guidelines lines in pixels. (in pixels)
+     */
+    public float borderLineDashGap;
+
+    /**
+     * the dash width of the guidelines lines in pixels. (in pixels)
+     */
+    public float borderLineDashWidth;
+
+    /**
      * the color of the guidelines lines
      */
     public int borderLineColor;
@@ -287,6 +297,8 @@ public class CropImageOptions implements Parcelable {
         aspectRatioY = 1;
 
         borderLineThickness = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, dm);
+        borderLineDashGap = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, dm);
+        borderLineDashWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, dm);
         borderLineColor = Color.argb(170, 255, 255, 255);
         borderCornerThickness = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, dm);
         borderCornerOffset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, dm);
@@ -341,6 +353,8 @@ public class CropImageOptions implements Parcelable {
         aspectRatioX = in.readInt();
         aspectRatioY = in.readInt();
         borderLineThickness = in.readFloat();
+        borderLineDashGap = in.readFloat();
+        borderLineDashWidth = in.readFloat();
         borderLineColor = in.readInt();
         borderCornerThickness = in.readFloat();
         borderCornerOffset = in.readFloat();
@@ -388,6 +402,8 @@ public class CropImageOptions implements Parcelable {
         dest.writeInt(aspectRatioX);
         dest.writeInt(aspectRatioY);
         dest.writeFloat(borderLineThickness);
+        dest.writeFloat(borderLineDashGap);
+        dest.writeFloat(borderLineDashWidth);
         dest.writeInt(borderLineColor);
         dest.writeFloat(borderCornerThickness);
         dest.writeFloat(borderCornerOffset);

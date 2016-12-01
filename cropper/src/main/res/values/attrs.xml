@@ -23,7 +23,10 @@
         <attr name="cropAspectRatioX" format="integer"/>
         <attr name="cropAspectRatioY" format="integer"/>
         <attr name="cropInitialCropWindowPaddingRatio" format="float"/>
+
         <attr name="cropBorderLineThickness" format="dimension"/>
+        <attr name="cropBorderLineDashGap" format="dimension"/>
+        <attr name="cropBorderLineDashWidth" format="dimension"/>
         <attr name="cropBorderLineColor" format="color"/>
         <attr name="cropBorderCornerThickness" format="dimension"/>
         <attr name="cropBorderCornerOffset" format="dimension"/>
