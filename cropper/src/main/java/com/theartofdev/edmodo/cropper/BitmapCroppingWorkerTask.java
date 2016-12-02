@@ -67,19 +67,9 @@ final class BitmapCroppingWorkerTask extends AsyncTask<Void, Void, BitmapCroppin
     private final int mOrgHeight;
 
     /**
-     * is there is fixed aspect ratio for the crop rectangle
+     * aspect ratio options
      */
-    private final boolean mFixAspectRatio;
-
-    /**
-     * the X aspect ration of the crop rectangle
-     */
-    private final int mAspectRatioX;
-
-    /**
-     * the Y aspect ration of the crop rectangle
-     */
-    private final int mAspectRatioY;
+    private final AspectRatioOptions mAspectRatioOptions;
 
     /**
      * required width of the cropping image
@@ -113,7 +103,7 @@ final class BitmapCroppingWorkerTask extends AsyncTask<Void, Void, BitmapCroppin
     //endregion
 
     BitmapCroppingWorkerTask(CropImageView cropImageView, Bitmap bitmap, float[] cropPoints,
-                             int degreesRotated, boolean fixAspectRatio, int aspectRatioX, int aspectRatioY,
+                             int degreesRotated, AspectRatioOptions aspectRatioOptions,
                              int reqWidth, int reqHeight, CropImageView.RequestSizeOptions options,
                              Uri saveUri, Bitmap.CompressFormat saveCompressFormat, int saveCompressQuality) {
 
@@ -123,9 +113,7 @@ final class BitmapCroppingWorkerTask extends AsyncTask<Void, Void, BitmapCroppin
         mCropPoints = cropPoints;
         mUri = null;
         mDegreesRotated = degreesRotated;
-        mFixAspectRatio = fixAspectRatio;
-        mAspectRatioX = aspectRatioX;
-        mAspectRatioY = aspectRatioY;
+        mAspectRatioOptions = aspectRatioOptions;
         mReqWidth = reqWidth;
         mReqHeight = reqHeight;
         mReqSizeOptions = options;
@@ -138,7 +126,7 @@ final class BitmapCroppingWorkerTask extends AsyncTask<Void, Void, BitmapCroppin
 
     BitmapCroppingWorkerTask(CropImageView cropImageView, Uri uri, float[] cropPoints,
                              int degreesRotated, int orgWidth, int orgHeight,
-                             boolean fixAspectRatio, int aspectRatioX, int aspectRatioY,
+                             AspectRatioOptions aspectRatioOptions,
                              int reqWidth, int reqHeight, CropImageView.RequestSizeOptions options,
                              Uri saveUri, Bitmap.CompressFormat saveCompressFormat, int saveCompressQuality) {
 
@@ -147,9 +135,7 @@ final class BitmapCroppingWorkerTask extends AsyncTask<Void, Void, BitmapCroppin
         mUri = uri;
         mCropPoints = cropPoints;
         mDegreesRotated = degreesRotated;
-        mFixAspectRatio = fixAspectRatio;
-        mAspectRatioX = aspectRatioX;
-        mAspectRatioY = aspectRatioY;
+        mAspectRatioOptions = aspectRatioOptions;
         mOrgWidth = orgWidth;
         mOrgHeight = orgHeight;
         mReqWidth = reqWidth;
@@ -182,9 +168,9 @@ final class BitmapCroppingWorkerTask extends AsyncTask<Void, Void, BitmapCroppin
                 BitmapUtils.BitmapSampled bitmapSampled;
                 if (mUri != null) {
                     bitmapSampled = BitmapUtils.cropBitmap(mContext, mUri, mCropPoints, mDegreesRotated, mOrgWidth, mOrgHeight,
-                            mFixAspectRatio, mAspectRatioX, mAspectRatioY, mReqWidth, mReqHeight);
+                            mAspectRatioOptions, mReqWidth, mReqHeight);
                 } else if (mBitmap != null) {
-                    bitmapSampled = BitmapUtils.cropBitmapObjectHandleOOM(mBitmap, mCropPoints, mDegreesRotated, mFixAspectRatio, mAspectRatioX, mAspectRatioY);
+                    bitmapSampled = BitmapUtils.cropBitmapObjectHandleOOM(mBitmap, mCropPoints, mDegreesRotated, mAspectRatioOptions);
                 } else {
                     return new Result((Bitmap) null, 1);
                 }

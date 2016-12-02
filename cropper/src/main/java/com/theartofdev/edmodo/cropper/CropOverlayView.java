@@ -139,25 +139,9 @@ public class CropOverlayView extends View {
     private CropWindowMoveHandler mMoveHandler;
 
     /**
-     * Flag indicating if the crop area should always be a certain aspect ratio (indicated by mTargetAspectRatio).
+     * AspectRatio Options.
      */
-    private boolean mFixAspectRatio;
-
-    /**
-     * save the current aspect ratio of the image
-     */
-    private int mAspectRatioX;
-
-    /**
-     * save the current aspect ratio of the image
-     */
-    private int mAspectRatioY;
-
-    /**
-     * The aspect ratio that the crop area should maintain;
-     * this variable is only used when mMaintainAspectRatio is true.
-     */
-    private float mTargetAspectRatio = ((float) mAspectRatioX) / mAspectRatioY;
+    private AspectRatioOptions mAspectRatioOptions;
 
     /**
      * Instance variables for customizable attributes
@@ -309,70 +293,16 @@ public class CropOverlayView extends View {
         }
     }
 
-    /**
-     * whether the aspect ratio is fixed or not; true fixes the aspect ratio, while false allows it to be changed.
-     */
-    public boolean isFixAspectRatio() {
-        return mFixAspectRatio;
+    public AspectRatioOptions getAspectRatioOptions() {
+        return mAspectRatioOptions;
     }
 
     /**
-     * Sets whether the aspect ratio is fixed or not; true fixes the aspect ratio, while false allows it to be changed.
+     * TODO
      */
-    public void setFixedAspectRatio(boolean fixAspectRatio) {
-        if (mFixAspectRatio != fixAspectRatio) {
-            mFixAspectRatio = fixAspectRatio;
-            if (initializedCropWindow) {
-                initCropWindow();
-                invalidate();
-            }
-        }
-    }
-
-    /**
-     * the X value of the aspect ratio;
-     */
-    public int getAspectRatioX() {
-        return mAspectRatioX;
-    }
-
-    /**
-     * Sets the X value of the aspect ratio; is defaulted to 1.
-     */
-    public void setAspectRatioX(int aspectRatioX) {
-        if (aspectRatioX <= 0) {
-            throw new IllegalArgumentException("Cannot set aspect ratio value to a number less than or equal to 0.");
-        } else if (mAspectRatioX != aspectRatioX) {
-            mAspectRatioX = aspectRatioX;
-            mTargetAspectRatio = ((float) mAspectRatioX) / mAspectRatioY;
-
-            if (initializedCropWindow) {
-                initCropWindow();
-                invalidate();
-            }
-        }
-    }
-
-    /**
-     * the Y value of the aspect ratio;
-     */
-    public int getAspectRatioY() {
-        return mAspectRatioY;
-    }
-
-    /**
-     * Sets the Y value of the aspect ratio; is defaulted to 1.
-     *
-     * @param aspectRatioY int that specifies the new Y value of the aspect
-     *                     ratio
-     */
-    public void setAspectRatioY(int aspectRatioY) {
-        if (aspectRatioY <= 0) {
-            throw new IllegalArgumentException("Cannot set aspect ratio value to a number less than or equal to 0.");
-        } else if (mAspectRatioY != aspectRatioY) {
-            mAspectRatioY = aspectRatioY;
-            mTargetAspectRatio = ((float) mAspectRatioX) / mAspectRatioY;
-
+    public void setAspectRatioOptions(AspectRatioOptions aspectRatioOptions) {
+        if (aspectRatioOptions != mAspectRatioOptions) {
+            mAspectRatioOptions = aspectRatioOptions;
             if (initializedCropWindow) {
                 initCropWindow();
                 invalidate();
@@ -471,11 +401,7 @@ public class CropOverlayView extends View {
 
         setGuidelines(options.guidelines);
 
-        setFixedAspectRatio(options.fixAspectRatio);
-
-        setAspectRatioX(options.aspectRatioX);
-
-        setAspectRatioY(options.aspectRatioY);
+        setAspectRatioOptions(options.aspectRatioOptions);
 
         setMultiTouchEnabled(options.multiTouchEnabled);
 
@@ -535,20 +461,18 @@ public class CropOverlayView extends View {
             rect.right = Math.min(rightLimit, rect.right);
             rect.bottom = Math.min(bottomLimit, rect.bottom);
 
-        } else if (mFixAspectRatio && rightLimit > leftLimit && bottomLimit > topLimit) {
+        } else if (!mAspectRatioOptions.isFreeAspectRatio() && rightLimit > leftLimit && bottomLimit > topLimit) {
 
             // If the image aspect ratio is wider than the crop aspect ratio,
             // then the image height is the determining initial length. Else, vice-versa.
             float bitmapAspectRatio = (rightLimit - leftLimit) / (bottomLimit - topLimit);
+            float mTargetAspectRatio = mAspectRatioOptions.getMinAspectRatio();
             if (bitmapAspectRatio > mTargetAspectRatio) {
 
                 rect.top = topLimit + verticalPadding;
                 rect.bottom = bottomLimit - verticalPadding;
 
                 float centerX = getWidth() / 2f;
-
-                //dirty fix for wrong crop overlay aspect ratio when using fixed aspect ratio
-                mTargetAspectRatio = (float) mAspectRatioX / mAspectRatioY;
 
                 // Limits the aspect ratio to no less than 40 wide or 40 tall
                 float cropWidth = Math.max(mCropWindowHandler.getMinCropWidth(), rect.height() * mTargetAspectRatio);
@@ -628,7 +552,8 @@ public class CropOverlayView extends View {
                 rect.bottom = bottomLimit;
             }
         }
-        if (mFixAspectRatio && Math.abs(rect.width() - rect.height() * mTargetAspectRatio) > 0.1) {
+        float mTargetAspectRatio = mAspectRatioOptions.getFixedAspectRatio();
+        if (mAspectRatioOptions.isFixedAspectRatio() && Math.abs(rect.width() - rect.height() * mTargetAspectRatio) > 0.1) {
             if (rect.width() > rect.height() * mTargetAspectRatio) {
                 float adj = Math.abs(rect.height() * mTargetAspectRatio - rect.width()) / 2;
                 rect.left += adj;
@@ -902,7 +827,7 @@ public class CropOverlayView extends View {
                 snapRadius = 0;
             }
 
-            mMoveHandler.move(rect, x, y, mCalcBounds, mViewWidth, mViewHeight, snapRadius, mFixAspectRatio, mTargetAspectRatio);
+            mMoveHandler.move(rect, x, y, mCalcBounds, mViewWidth, mViewHeight, snapRadius, mAspectRatioOptions);
             mCropWindowHandler.setRect(rect);
             callOnCropWindowChanged(true);
             invalidate();

@@ -22,7 +22,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.croppersample.R;
+import com.theartofdev.edmodo.cropper.AspectRatioOptions;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -197,19 +197,22 @@ public class MainActivity extends AppCompatActivity {
                 updateDrawerTogglesByOptions(mCropImageViewOptions);
                 break;
             case R.id.drawer_option_toggle_aspect_ratio:
-                if (!mCropImageViewOptions.fixAspectRatio) {
-                    mCropImageViewOptions.fixAspectRatio = true;
-                    mCropImageViewOptions.aspectRatio = new Pair<>(1, 1);
-                } else {
-                    if (mCropImageViewOptions.aspectRatio.first == 1 && mCropImageViewOptions.aspectRatio.second == 1) {
-                        mCropImageViewOptions.aspectRatio = new Pair<>(4, 3);
-                    } else if (mCropImageViewOptions.aspectRatio.first == 4 && mCropImageViewOptions.aspectRatio.second == 3) {
-                        mCropImageViewOptions.aspectRatio = new Pair<>(16, 9);
-                    } else if (mCropImageViewOptions.aspectRatio.first == 16 && mCropImageViewOptions.aspectRatio.second == 9) {
-                        mCropImageViewOptions.aspectRatio = new Pair<>(9, 16);
-                    } else {
-                        mCropImageViewOptions.fixAspectRatio = false;
-                    }
+                switch (mCropImageViewOptions.aspectRatioOptions.getAspectRatioType()) {
+                    case FREE:
+                        mCropImageViewOptions.aspectRatioOptions = new AspectRatioOptions(1, 1);
+                        break;
+                    case FIXED:
+                        if (mCropImageViewOptions.aspectRatioOptions.getFixedAspectRatio() == 1) {
+                            mCropImageViewOptions.aspectRatioOptions = new AspectRatioOptions(3, 4);
+                        } else if (mCropImageViewOptions.aspectRatioOptions.getFixedAspectRatio() == 4 / 3f) {
+                            mCropImageViewOptions.aspectRatioOptions = new AspectRatioOptions(16, 9);
+                        } else {
+                            mCropImageViewOptions.aspectRatioOptions = new AspectRatioOptions(3, 4, 16, 9);
+                        }
+                        break;
+                    case LIMITED:
+                        mCropImageViewOptions.aspectRatioOptions = new AspectRatioOptions();
+                        break;
                 }
                 mCurrentFragment.setCropImageViewOptions(mCropImageViewOptions);
                 updateDrawerTogglesByOptions(mCropImageViewOptions);
@@ -269,8 +272,11 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.drawer_option_toggle_show_progress_bar)).setText(getResources().getString(R.string.drawer_option_toggle_show_progress_bar, Boolean.toString(options.showProgressBar)));
 
         String aspectRatio = "FREE";
-        if (options.fixAspectRatio) {
-            aspectRatio = options.aspectRatio.first + ":" + options.aspectRatio.second;
+        if (options.aspectRatioOptions.isFixedAspectRatio()) {
+            aspectRatio = options.aspectRatioOptions.minAspectRatio.x + ":" + options.aspectRatioOptions.minAspectRatio.y;
+        } else if (options.aspectRatioOptions.isLimitedAspectRatio()) {
+            aspectRatio = options.aspectRatioOptions.minAspectRatio.x + ":" + options.aspectRatioOptions.minAspectRatio.y + " ; " +
+                    options.aspectRatioOptions.maxAspectRatio.x + ":" + options.aspectRatioOptions.maxAspectRatio.y;
         }
         ((TextView) findViewById(R.id.drawer_option_toggle_aspect_ratio)).setText(getResources().getString(R.string.drawer_option_toggle_aspect_ratio, aspectRatio));
 

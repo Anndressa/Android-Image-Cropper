@@ -156,8 +156,8 @@ public final class CropImage {
      * The source can be camera's  (ACTION_IMAGE_CAPTURE) or gallery's (ACTION_GET_CONTENT).<br>
      * All possible sources are added to the intent chooser.
      *
-     * @param context used to access Android APIs, like content resolve, it is your activity/fragment/widget.
-     * @param title the title to use for the chooser UI
+     * @param context          used to access Android APIs, like content resolve, it is your activity/fragment/widget.
+     * @param title            the title to use for the chooser UI
      * @param includeDocuments if to include KitKat documents activity containing all sources
      */
     public static Intent getPickImageChooserIntent(@NonNull Context context, CharSequence title, boolean includeDocuments) {
@@ -200,7 +200,7 @@ public final class CropImage {
      * you will be able to get the pictureUri using {@link #getPickImageResultUri(Context, Intent)}. Otherwise, it is just you use
      * the Uri passed to this method.
      *
-     * @param context used to access Android APIs, like content resolve, it is your activity/fragment/widget.
+     * @param context       used to access Android APIs, like content resolve, it is your activity/fragment/widget.
      * @param outputFileUri the Uri where the picture will be placed.
      */
     public static Intent getCameraIntent(@NonNull Context context, Uri outputFileUri) {
@@ -321,7 +321,7 @@ public final class CropImage {
      * Will return the correct URI for camera and gallery image.
      *
      * @param context used to access Android APIs, like content resolve, it is your activity/fragment/widget.
-     * @param data the returned data of the  activity result
+     * @param data    the returned data of the  activity result
      */
     public static Uri getPickImageResultUri(@NonNull Context context, @Nullable Intent data) {
         boolean isCamera = true;
@@ -339,7 +339,7 @@ public final class CropImage {
      * do we get an exception when we try, Android is awesome.
      *
      * @param context used to access Android APIs, like content resolve, it is your activity/fragment/widget.
-     * @param uri the result URI of image pick.
+     * @param uri     the result URI of image pick.
      * @return true - required permission are not granted, false - either no need for permissions or they are granted
      */
     public static boolean isReadExternalStoragePermissionsRequired(@NonNull Context context, @NonNull Uri uri) {
@@ -353,7 +353,7 @@ public final class CropImage {
      * Only relevant for API version 23 and above.
      *
      * @param context used to access Android APIs, like content resolve, it is your activity/fragment/widget.
-     * @param uri the result URI of image pick.
+     * @param uri     the result URI of image pick.
      */
     public static boolean isUriRequiresPermissions(@NonNull Context context, @NonNull Uri uri) {
         try {
@@ -566,26 +566,28 @@ public final class CropImage {
         }
 
         /**
-         * whether the width to height aspect ratio should be maintained or free to change.<br>
-         * <i>Default: false</i>
-         */
-        public ActivityBuilder setFixAspectRatio(boolean fixAspectRatio) {
-            mOptions.fixAspectRatio = fixAspectRatio;
-            return this;
-        }
-
-        /**
          * the X,Y value of the aspect ratio.<br>
-         * Also sets fixes aspect ratio to TRUE.<br>
-         * <i>Default: 1/1</i>
          *
          * @param aspectRatioX the width
          * @param aspectRatioY the height
          */
-        public ActivityBuilder setAspectRatio(int aspectRatioX, int aspectRatioY) {
-            mOptions.aspectRatioX = aspectRatioX;
-            mOptions.aspectRatioY = aspectRatioY;
-            mOptions.fixAspectRatio = true;
+        public ActivityBuilder setFixedAspectRatio(int aspectRatioX, int aspectRatioY) {
+            mOptions.aspectRatioOptions = new AspectRatioOptions(aspectRatioX, aspectRatioY);
+            return this;
+        }
+
+        /**
+         * the X,Y value of the aspect ratio min and max.<br>
+         *
+         * @param minAspectRatioX the width of min aspect ratio
+         * @param minAspectRatioY the height of min aspect ratio
+         * @param maxAspectRatioX the width of max aspect ratio
+         * @param maxAspectRatioY the height of max aspect ratio
+         */
+        public ActivityBuilder setLimitedAspectRatio(int minAspectRatioX, int minAspectRatioY,
+                                                     int maxAspectRatioX, int maxAspectRatioY) {
+            mOptions.aspectRatioOptions = new AspectRatioOptions(minAspectRatioX, minAspectRatioY,
+                    maxAspectRatioX, maxAspectRatioY);
             return this;
         }
 

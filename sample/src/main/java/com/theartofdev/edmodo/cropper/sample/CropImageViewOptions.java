@@ -14,6 +14,7 @@ package com.theartofdev.edmodo.cropper.sample;
 
 import android.util.Pair;
 
+import com.theartofdev.edmodo.cropper.AspectRatioOptions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 /**
@@ -27,13 +28,11 @@ final class CropImageViewOptions {
 
     public CropImageView.Guidelines guidelines = CropImageView.Guidelines.ON_TOUCH;
 
-    public Pair<Integer, Integer> aspectRatio = new Pair<>(1, 1);
+    public AspectRatioOptions aspectRatioOptions = new AspectRatioOptions();
 
     public boolean autoZoomEnabled;
 
     public int maxZoomLevel;
-
-    public boolean fixAspectRatio;
 
     public boolean multitouch;
 

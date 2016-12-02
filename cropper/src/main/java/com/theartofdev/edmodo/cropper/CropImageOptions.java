@@ -87,10 +87,10 @@ public class CropImageOptions implements Parcelable {
      */
     public boolean autoZoomEnabled;
 
-  /**
-   * if multi-touch should be enabled on the crop box
-   * default: false
-   */
+    /**
+     * if multi-touch should be enabled on the crop box
+     * default: false
+     */
     public boolean multiTouchEnabled;
 
     /**
@@ -106,17 +106,7 @@ public class CropImageOptions implements Parcelable {
     /**
      * whether the width to height aspect ratio should be maintained or free to change.
      */
-    public boolean fixAspectRatio;
-
-    /**
-     * the X value of the aspect ratio.
-     */
-    public int aspectRatioX;
-
-    /**
-     * the Y value of the aspect ratio.
-     */
-    public int aspectRatioY;
+    public AspectRatioOptions aspectRatioOptions;
 
     /**
      * the thickness of the guidelines lines in pixels. (in pixels)
@@ -292,9 +282,7 @@ public class CropImageOptions implements Parcelable {
         maxZoom = 4;
         initialCropWindowPaddingRatio = 0.1f;
 
-        fixAspectRatio = false;
-        aspectRatioX = 1;
-        aspectRatioY = 1;
+        aspectRatioOptions = new AspectRatioOptions();
 
         borderLineThickness = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, dm);
         borderLineDashGap = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, dm);
@@ -349,9 +337,7 @@ public class CropImageOptions implements Parcelable {
         multiTouchEnabled = in.readByte() != 0;
         maxZoom = in.readInt();
         initialCropWindowPaddingRatio = in.readFloat();
-        fixAspectRatio = in.readByte() != 0;
-        aspectRatioX = in.readInt();
-        aspectRatioY = in.readInt();
+        aspectRatioOptions = in.readParcelable(AspectRatioOptions.class.getClassLoader());
         borderLineThickness = in.readFloat();
         borderLineDashGap = in.readFloat();
         borderLineDashWidth = in.readFloat();
@@ -398,9 +384,7 @@ public class CropImageOptions implements Parcelable {
         dest.writeByte((byte) (multiTouchEnabled ? 1 : 0));
         dest.writeInt(maxZoom);
         dest.writeFloat(initialCropWindowPaddingRatio);
-        dest.writeByte((byte) (fixAspectRatio ? 1 : 0));
-        dest.writeInt(aspectRatioX);
-        dest.writeInt(aspectRatioY);
+        dest.writeParcelable(aspectRatioOptions, flags);
         dest.writeFloat(borderLineThickness);
         dest.writeFloat(borderLineDashGap);
         dest.writeFloat(borderLineDashWidth);
@@ -454,12 +438,9 @@ public class CropImageOptions implements Parcelable {
         if (initialCropWindowPaddingRatio < 0 || initialCropWindowPaddingRatio >= 0.5) {
             throw new IllegalArgumentException("Cannot set initial crop window padding value to a number < 0 or >= 0.5");
         }
-        if (aspectRatioX <= 0) {
-            throw new IllegalArgumentException("Cannot set aspect ratio value to a number less than or equal to 0.");
-        }
-        if (aspectRatioY <= 0) {
-            throw new IllegalArgumentException("Cannot set aspect ratio value to a number less than or equal to 0.");
-        }
+
+        aspectRatioOptions.validate();
+
         if (borderLineThickness < 0) {
             throw new IllegalArgumentException("Cannot set line thickness value to a number less than 0.");
         }

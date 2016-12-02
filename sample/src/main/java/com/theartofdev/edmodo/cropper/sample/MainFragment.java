@@ -69,8 +69,7 @@ public final class MainFragment extends Fragment
         mCropImageView.setScaleType(options.scaleType);
         mCropImageView.setCropShape(options.cropShape);
         mCropImageView.setGuidelines(options.guidelines);
-        mCropImageView.setAspectRatio(options.aspectRatio.first, options.aspectRatio.second);
-        mCropImageView.setFixedAspectRatio(options.fixAspectRatio);
+        mCropImageView.setAspectRatioOptions(options.aspectRatioOptions);
         mCropImageView.setMultiTouchEnabled(options.multitouch);
         mCropImageView.setShowCropOverlay(options.showCropOverlay);
         mCropImageView.setShowProgressBar(options.showProgressBar);
@@ -97,8 +96,7 @@ public final class MainFragment extends Fragment
         options.scaleType = mCropImageView.getScaleType();
         options.cropShape = mCropImageView.getCropShape();
         options.guidelines = mCropImageView.getGuidelines();
-        options.aspectRatio = mCropImageView.getAspectRatio();
-        options.fixAspectRatio = mCropImageView.isFixAspectRatio();
+        options.aspectRatioOptions = mCropImageView.getAspectRatioOptions();
         options.showCropOverlay = mCropImageView.isShowCropOverlay();
         options.showProgressBar = mCropImageView.isShowProgressBar();
         options.autoZoomEnabled = mCropImageView.isAutoZoomEnabled();

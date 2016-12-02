@@ -19,10 +19,14 @@
         <attr name="cropAutoZoomEnabled" format="boolean"/>
         <attr name="cropMaxZoom" format="integer"/>
         <attr name="cropMultiTouchEnabled" format="boolean"/>
-        <attr name="cropFixAspectRatio" format="boolean"/>
-        <attr name="cropAspectRatioX" format="integer"/>
-        <attr name="cropAspectRatioY" format="integer"/>
         <attr name="cropInitialCropWindowPaddingRatio" format="float"/>
+
+        <attr name="cropFixedAspectRatioX" format="integer"/>
+        <attr name="cropFixedAspectRatioY" format="integer"/>
+        <attr name="cropMinAspectRatioX" format="integer"/>
+        <attr name="cropMinAspectRatioY" format="integer"/>
+        <attr name="cropMaxAspectRatioX" format="integer"/>
+        <attr name="cropMaxAspectRatioY" format="integer"/>
 
         <attr name="cropBorderLineThickness" format="dimension"/>
         <attr name="cropBorderLineDashGap" format="dimension"/>
