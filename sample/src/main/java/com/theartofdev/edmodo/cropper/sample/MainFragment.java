@@ -180,12 +180,12 @@ public final class MainFragment extends Fragment
     }
 
     @Override
-    public void onSetImageUriComplete(CropImageView view, Uri uri, Exception error) {
-        if (error == null) {
+    public void onSetImageUriComplete(CropImageView view, CropImageView.LoadResult result) {
+        if (result.isSuccessful()) {
             Toast.makeText(getActivity(), "Image load successful", Toast.LENGTH_SHORT).show();
         } else {
-            Log.e("AIC", "Failed to load image by URI", error);
-            Toast.makeText(getActivity(), "Image load failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e("AIC", "Failed to load image by URI", result.error);
+            Toast.makeText(getActivity(), "Image load failed: " + result.error.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

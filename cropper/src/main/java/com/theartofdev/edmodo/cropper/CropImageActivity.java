@@ -211,8 +211,8 @@ public class CropImageActivity extends AppCompatActivity implements CropImageVie
     }
 
     @Override
-    public void onSetImageUriComplete(CropImageView view, Uri uri, Exception error) {
-        if (error == null) {
+    public void onSetImageUriComplete(@NonNull CropImageView view, @NonNull CropImageView.LoadResult result) {
+        if (result.isSuccessful()) {
             if (mOptions.initialCropWindowRectangle != null) {
                 mCropImageView.setCropRect(mOptions.initialCropWindowRectangle);
             }
@@ -220,7 +220,7 @@ public class CropImageActivity extends AppCompatActivity implements CropImageVie
                 mCropImageView.setRotatedDegrees(mOptions.initialRotation);
             }
         } else {
-            setResult(null, error, 1);
+            setResult(result.uri, result.error, result.loadSampleSize);
         }
     }
 

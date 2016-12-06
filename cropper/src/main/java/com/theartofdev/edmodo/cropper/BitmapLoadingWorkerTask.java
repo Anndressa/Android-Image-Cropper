@@ -23,7 +23,7 @@ import java.lang.ref.WeakReference;
 /**
  * Task to load bitmap asynchronously from the UI thread.
  */
-final class BitmapLoadingWorkerTask extends AsyncTask<Void, Void, BitmapLoadingWorkerTask.Result> {
+final class BitmapLoadingWorkerTask extends AsyncTask<Void, Void, CropImageView.LoadResult> {
 
     //region: Fields and Consts
 
@@ -79,7 +79,7 @@ final class BitmapLoadingWorkerTask extends AsyncTask<Void, Void, BitmapLoadingW
      * @return the decoded bitmap data
      */
     @Override
-    protected Result doInBackground(Void... params) {
+    protected CropImageView.LoadResult doInBackground(Void... params) {
         try {
             if (!isCancelled()) {
 
@@ -91,12 +91,12 @@ final class BitmapLoadingWorkerTask extends AsyncTask<Void, Void, BitmapLoadingW
                     BitmapUtils.RotateBitmapResult rotateResult =
                             BitmapUtils.rotateBitmapByExif(decodeResult.bitmap, mContext, mUri);
 
-                    return new Result(mUri, rotateResult.bitmap, decodeResult.sampleSize, rotateResult.degrees);
+                    return new CropImageView.LoadResult(mUri, rotateResult.bitmap, decodeResult.sampleSize, rotateResult.degrees);
                 }
             }
             return null;
         } catch (Exception e) {
-            return new Result(mUri, e);
+            return new CropImageView.LoadResult(mUri, e);
         }
     }
 
@@ -106,7 +106,7 @@ final class BitmapLoadingWorkerTask extends AsyncTask<Void, Void, BitmapLoadingW
      * @param result the result of bitmap loading
      */
     @Override
-    protected void onPostExecute(Result result) {
+    protected void onPostExecute(CropImageView.LoadResult result) {
         if (result != null) {
             boolean completeCalled = false;
             if (!isCancelled()) {
@@ -123,53 +123,4 @@ final class BitmapLoadingWorkerTask extends AsyncTask<Void, Void, BitmapLoadingW
         }
     }
 
-    //region: Inner class: Result
-
-    /**
-     * The result of BitmapLoadingWorkerTask async loading.
-     */
-    public static final class Result {
-
-        /**
-         * The Android URI of the image to load
-         */
-        public final Uri uri;
-
-        /**
-         * The loaded bitmap
-         */
-        public final Bitmap bitmap;
-
-        /**
-         * The sample size used to load the given bitmap
-         */
-        public final int loadSampleSize;
-
-        /**
-         * The degrees the image was rotated
-         */
-        public final int degreesRotated;
-
-        /**
-         * The error that occurred during async bitmap loading.
-         */
-        public final Exception error;
-
-        Result(Uri uri, Bitmap bitmap, int loadSampleSize, int degreesRotated) {
-            this.uri = uri;
-            this.bitmap = bitmap;
-            this.loadSampleSize = loadSampleSize;
-            this.degreesRotated = degreesRotated;
-            this.error = null;
-        }
-
-        Result(Uri uri, Exception error) {
-            this.uri = uri;
-            this.bitmap = null;
-            this.loadSampleSize = 0;
-            this.degreesRotated = 0;
-            this.error = error;
-        }
-    }
-    //endregion
 }

@@ -25,6 +25,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -903,7 +904,7 @@ public class CropImageView extends FrameLayout {
      *
      * @param result the result of bitmap loading
      */
-    void onSetImageUriAsyncComplete(BitmapLoadingWorkerTask.Result result) {
+    void onSetImageUriAsyncComplete(CropImageView.LoadResult result) {
 
         mBitmapLoadingWorkerTask = null;
         setProgressBarVisibility();
@@ -914,7 +915,7 @@ public class CropImageView extends FrameLayout {
 
         OnSetImageUriCompleteListener listener = mOnSetImageUriCompleteListener;
         if (listener != null) {
-            listener.onSetImageUriComplete(this, result.uri, result.error);
+            listener.onSetImageUriComplete(this, result);
         }
     }
 
@@ -1597,10 +1598,9 @@ public class CropImageView extends FrameLayout {
          * If loading failed error parameter will contain the error.
          *
          * @param view  The crop image view that loading of image was complete.
-         * @param uri   the URI of the image that was loading
-         * @param error if error occurred during loading will contain the error, otherwise null.
+         * @param result  the result of the image that was loading
          */
-        void onSetImageUriComplete(CropImageView view, Uri uri, Exception error);
+        void onSetImageUriComplete(@NonNull CropImageView view, @NonNull CropImageView.LoadResult result);
     }
     //endregion
 
@@ -1779,6 +1779,63 @@ public class CropImageView extends FrameLayout {
          */
         public int getSampleSize() {
             return mSampleSize;
+        }
+    }
+    //endregion
+
+    //region: Inner class: Result
+
+    /**
+     * The result of BitmapLoadingWorkerTask async loading.
+     */
+    public static final class LoadResult {
+
+        /**
+         * The Android URI of the image to load
+         */
+        public final Uri uri;
+
+        /**
+         * The loaded bitmap
+         */
+        public final Bitmap bitmap;
+
+        /**
+         * The sample size used to load the given bitmap
+         */
+        public final int loadSampleSize;
+
+        /**
+         * The degrees the image was rotated
+         */
+        public final int degreesRotated;
+
+        /**
+         * The error that occurred during async bitmap loading.
+         */
+        public final Exception error;
+
+        LoadResult(Uri uri, Bitmap bitmap, int loadSampleSize, int degreesRotated) {
+            this.uri = uri;
+            this.bitmap = bitmap;
+            this.loadSampleSize = loadSampleSize;
+            this.degreesRotated = degreesRotated;
+            this.error = null;
+        }
+
+        LoadResult(Uri uri, Exception error) {
+            this.uri = uri;
+            this.bitmap = null;
+            this.loadSampleSize = 0;
+            this.degreesRotated = 0;
+            this.error = error;
+        }
+
+        /**
+         * Is the result is success or error.
+         */
+        public boolean isSuccessful() {
+            return error == null;
         }
     }
     //endregion
