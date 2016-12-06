@@ -794,6 +794,7 @@ public class CropImageView extends FrameLayout {
      */
     public void setImageResource(int resId) {
         if (resId != 0) {
+            mRestoreCropWindowRect = null;
             mCropOverlayView.setInitialCropWindowRect(null);
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
             setBitmap(bitmap, resId);
@@ -809,6 +810,7 @@ public class CropImageView extends FrameLayout {
      */
     public void setImageUriAsync(Uri uri) {
         if (uri != null) {
+            mRestoreCropWindowRect = null;
             BitmapLoadingWorkerTask currentTask = mBitmapLoadingWorkerTask != null ? mBitmapLoadingWorkerTask.get() : null;
             if (currentTask != null) {
                 // cancel previous loading (no check if the same URI because camera URI can be the same for different images)
