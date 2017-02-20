@@ -495,7 +495,11 @@ final class BitmapUtils {
         BitmapRegionDecoder decoder = null;
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = sampleMulti * calculateInSampleSizeByReqestedSize(rect.width(), rect.height(), reqWidth, reqHeight);
+
+
+            options.inSampleSize = sampleMulti * Math.max(
+                    calculateInSampleSizeByReqestedSize(rect.width(), rect.height(), reqWidth, reqHeight),
+                    calculateInSampleSizeByMaxTextureSize(rect.width(), rect.height()));
 
             stream = context.getContentResolver().openInputStream(uri);
             decoder = BitmapRegionDecoder.newInstance(stream, false);
